@@ -15,14 +15,14 @@ def create_field(canvas, c_height, c_width):
     height = input("[ ! ] Enter field height: ")
     width = input("[ ! ] Enter field width: ")
     if height < c_height and width < c_width:
-        canvas.create_rectangle(0, 0, height, width)
+        canvas.create_rectangle(0, 0, width, height)
         return height, width
     else:
         while height > c_height or width > c_width:
             print("Incorrect data ! Try again")
             height = input("[ ! ] Enter field height: ")
             width = input("[ ! ] Enter field width: ")
-    canvas.create_rectangle(0, 0, height, width)
+    canvas.create_rectangle(0, 0, width, height)
     return height, width
 
 def create_vertical_lines(canvas, f_height, f_width):
