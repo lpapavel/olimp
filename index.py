@@ -85,6 +85,16 @@ def create_sectors(canvas, f_height, f_width):
 
     return vertical_mid_list, horizontal_mid_list
 
+def print_dots(vertical_mid_list, horizontal_mid_list, canvas, width, height):
+    element = 0
+    count = 0
+    while count < vertical_mid_list.__len__():
+        while element < horizontal_mid_list.__len__():
+            canvas.create_line(vertical_mid_list[count], horizontal_mid_list[element], vertical_mid_list[count] + 1, horizontal_mid_list[element])
+            element = element + 1
+        count = count + 1
+        element = 0
+
 
 tkinter = Tk()
 
@@ -96,7 +106,7 @@ canv.pack()
 
 (vertical_mid_list, horizontal_mid_list) = create_sectors(canv, field_height, field_width) # Drawing sectors (step = 10px default) !!!!! -- > mid_lists - list with mid coords
 
-
+print_dots(vertical_mid_list, horizontal_mid_list, canv, field_width, field_height)
 
 
 tkinter.mainloop()
