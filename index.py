@@ -1,4 +1,5 @@
 from tkinter import *
+import math
 
 def get_canv_params():
     print("========== - DRAWING CANVAS - ==========")
@@ -25,11 +26,11 @@ def create_field(canvas, c_height, c_width):
     canvas.create_rectangle(0, 0, width, height)
     return height, width
 
-def create_vertical_lines(canvas, f_height, f_width):
+def create_vertical_lines(canvas, f_height, f_width, sector_size):
     # vertical
     vertical_mid_list = []
     count = 0
-    step = 10
+    step = sector_size
     n = 0
     while count < f_width:
         canvas.create_line(count, 0, count, f_height)
@@ -40,10 +41,10 @@ def create_vertical_lines(canvas, f_height, f_width):
     return vertical_mid_list
 
 
-def create_horizontal_lines(canvas, f_height, f_width):
+def create_horizontal_lines(canvas, f_height, f_width, sector_size):
     # horisontal
     horisontal_mid_list = []
-    step = 10
+    step = sector_size
     n = 0
     count = 0
     while count < f_height:
@@ -55,13 +56,32 @@ def create_horizontal_lines(canvas, f_height, f_width):
     return horisontal_mid_list
 
 
+def get_copter_params():
+    print("========== - COPTER PARAMS - ==========")
+    cam_view_angle = input("Enter cam angle: ")
+    flight_altitude = input("Enter the flight altitude: ")
+
+    return cam_view_angle, flight_altitude
+
+
+def calculate_sector_size(angle, altitude):
+    ang = (math.pi / 3) / 2 # 1/2 of alfa angle (for calculating size of the sector) TAN(alpha) = 1/2 sector size / height
+
+    result = 2 * altitude * math.tan(ang)
+    return round(result)
+
+
 def create_sectors(canvas, f_height, f_width):
+
+    (cam_view_angle, flight_altitude) = get_copter_params()
+
+    sector_size = calculate_sector_size(int(cam_view_angle), int(flight_altitude))
 
     vertical_mid_list = []
     horizontal_mid_list = []
 
-    vertical_mid_list = create_vertical_lines(canvas, f_height, f_width)
-    horizontal_mid_list = create_horizontal_lines(canvas, f_height, f_width)
+    vertical_mid_list = create_vertical_lines(canvas, f_height, f_width, sector_size)
+    horizontal_mid_list = create_horizontal_lines(canvas, f_height, f_width, sector_size)
 
     return vertical_mid_list, horizontal_mid_list
 
