@@ -2,10 +2,10 @@ from tkinter import *
 import math
 
 def get_canv_params():
-    print("========== - DRAWING CANVAS - ==========")
-    height = input("[ ! ] Enter canvas height: ")
-    width = input("[ ! ] Enter canvas width: ")
-    return height, width
+    #print("========== - DRAWING CANVAS - ==========")
+    #height = input("[ ! ] Enter canvas height: ")
+    #width = input("[ ! ] Enter canvas width: ")
+    return 9000, 9000
 
 def create_canvas(_width, _height,tkinter):
     canv = Canvas(tkinter, width=_width, height=_height, bg='white')
@@ -40,7 +40,6 @@ def create_vertical_lines(canvas, f_height, f_width, sector_size):
         vertical_mid_list.append(current_mid)
     return vertical_mid_list
 
-
 def create_horizontal_lines(canvas, f_height, f_width, sector_size):
     # horisontal
     horisontal_mid_list = []
@@ -55,7 +54,6 @@ def create_horizontal_lines(canvas, f_height, f_width, sector_size):
         horisontal_mid_list.append(current_mid)
     return horisontal_mid_list
 
-
 def get_copter_params():
     print("========== - COPTER PARAMS - ==========")
     cam_view_angle = input("Enter cam angle: ")
@@ -63,13 +61,11 @@ def get_copter_params():
 
     return cam_view_angle, flight_altitude
 
-
 def calculate_sector_size(angle, altitude):
     ang = (math.pi / 3) / 2 # 1/2 of alfa angle (for calculating size of the sector) TAN(alpha) = 1/2 sector size / height
 
     result = 2 * altitude * math.tan(ang)
     return round(result)
-
 
 def create_sectors(canvas, f_height, f_width):
 
@@ -119,6 +115,40 @@ def print_way(canvas, horizontal_mid_list, vertical_mid_list):
     # go home
     canvas.create_line(horizontal_mid_list[row_max - 1], vertical_mid_list[count_max - 1], horizontal_mid_list[0], vertical_mid_list[0])
 
+def change_optimal_way(canv, horizontal_mid_list, vertical_mid_list):
+    x_len = horizontal_mid_list.__len__()
+    y_len = vertical_mid_list.__len__()
+
+    if x_len % 2 == 1 and y_len % 2 == 0:
+        print("V - 1")
+    elif x_len % 2 == 0 and y_len % 2 == 1:
+        print("V - 2")
+    elif x_len % 2 == 0 and y_len % 2 == 0:
+        print("V - 3")
+    elif x_len % 2 == 1 and y_len % 2 == 1:
+        print("V - 4")
+
+def export_x(h_m_l):
+    count = 0
+    output_x = open("output_x.txt", 'w')
+    while count < h_m_l.__len__():
+        output_x.write(str(h_m_l[count]) + "\n")
+        count = count + 1
+    output_x.close()
+    print("[ ! ] X coordinates were exported to -- > output_x.txt \n")
+
+def export_y(v_m_l):
+    count = 0
+    output_y = open("output_y.txt", 'w')
+    while count < v_m_l.__len__():
+        output_y.write(str(v_m_l[count]) + "\n")
+        count = count + 1
+    output_y.close()
+    print("[ ! ] Y coordinates were exported to -- > output_y.txt \n")
+
+def export_coordinates( horizontal_mid_list, vertical_mid_list):
+    export_x(horizontal_mid_list)
+    export_y(vertical_mid_list)
 
 
 tkinter = Tk()
@@ -131,8 +161,12 @@ canv.pack()
 
 (vertical_mid_list, horizontal_mid_list) = create_sectors(canv, field_height, field_width) # Drawing sectors (step = 10px default) !!!!! -- > mid_lists - list with mid coords
 
-#print_dots(vertical_mid_list, horizontal_mid_list, canv, field_width, field_height)
+print_dots(vertical_mid_list, horizontal_mid_list, canv, field_width, field_height)
 
-print_way(canv, vertical_mid_list, horizontal_mid_list)
+export_coordinates(vertical_mid_list, horizontal_mid_list)
+
+print_way(canv, vertical_mid_list, horizontal_mid_list) # Default not optimal way
+
+change_optimal_way(canv, vertical_mid_list, horizontal_mid_list)
 
 tkinter.mainloop()
