@@ -13,8 +13,15 @@ def create_canvas(_width, _height,tkinter):
 
 def create_field(canvas, c_height, c_width):
     print("\n========== - DRAWING FIELD - ==========")
-    height = input("[ ! ] Enter field height: ")
-    width = input("[ ! ] Enter field width: ")
+    width1 = input("[ ! ] Enter longitude0 : ")
+    height1 = input("[ ! ] Enter latitude0 : ")
+
+    width2 = input("[ ! ] Enter longitude (end) : ")
+    height2 = input("[ ! ] Enter latitude (end) : ")
+
+    height = height2 - height1
+    width = width2 - width1
+
     if height < c_height and width < c_width:
         canvas.create_rectangle(0, 0, width, height)
         return height, width
@@ -119,14 +126,15 @@ def change_optimal_way(canv, horizontal_mid_list, vertical_mid_list):
     x_len = horizontal_mid_list.__len__()
     y_len = vertical_mid_list.__len__()
 
-    if x_len % 2 == 1 and y_len % 2 == 0:
-        print("V - 1")
-    elif x_len % 2 == 0 and y_len % 2 == 1:
+    if x_len % 2 == 0 and y_len % 2 == 1:
+        print("Var - 1")
+
+        print("Var - 1")
+    elif x_len % 2 == 1 and y_len % 2 == 0:
         print("V - 2")
-    elif x_len % 2 == 0 and y_len % 2 == 0:
-        print("V - 3")
     elif x_len % 2 == 1 and y_len % 2 == 1:
-        print("V - 4")
+        print("V - 3")
+
 
 def export_x(h_m_l):
     count = 0
@@ -146,9 +154,65 @@ def export_y(v_m_l):
     output_y.close()
     print("[ ! ] Y coordinates were exported to -- > output_y.txt \n")
 
-def export_coordinates( horizontal_mid_list, vertical_mid_list):
+def export_coordinates(h_m_l , v_m_l):
     export_x(horizontal_mid_list)
     export_y(vertical_mid_list)
+
+def optimal_way_1(canvas, horizontal_mid_list, vertical_mid_list):
+    y = 0
+    x = 0
+    output_c = open("output.txt", 'w')
+
+    while y < vertical_mid_list.__len__() - 1:
+        canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x], vertical_mid_list[y + 1], arrow=LAST)
+        output_c.write(str(horizontal_mid_list[x]) + " : " + str(vertical_mid_list[y]) + "\n")
+        y = y + 1
+
+
+    while x < horizontal_mid_list.__len__() - 1:
+        canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x + 1], vertical_mid_list[y], arrow=LAST)
+        x = x + 1
+        output_c.write(str(horizontal_mid_list[x]) + " : " + str(vertical_mid_list[y])+ "\n")
+
+    canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x], vertical_mid_list[y - 1], arrow=LAST)
+
+
+    y = y - 1
+    top_turn = True
+
+    count = 0
+
+    while count < (horizontal_mid_list.__len__() - 1) / 2:
+        while y > 0:
+            canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x],
+                               vertical_mid_list[y - 1], arrow=LAST)
+            y = y - 1
+        canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x - 1],
+                           vertical_mid_list[y], arrow=LAST)
+        x = x - 1
+        y = 0
+        while y < vertical_mid_list.__len__() - 2:
+            canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x],
+                               vertical_mid_list[y + 1], arrow=LAST)
+            y = y + 1
+        canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x - 1],
+                           vertical_mid_list[y], arrow=LAST)
+        x = x - 1
+
+        count = count + 1
+    #### go top
+
+    while y > 0:
+        canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x],
+                           vertical_mid_list[y - 1], arrow=LAST)
+        y = y - 1
+
+    #### go home
+
+    canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x - 1],
+                       vertical_mid_list[y], arrow=LAST)
+
+
 
 
 tkinter = Tk()
@@ -163,10 +227,12 @@ canv.pack()
 
 print_dots(vertical_mid_list, horizontal_mid_list, canv, field_width, field_height)
 
-export_coordinates(vertical_mid_list, horizontal_mid_list)
+#export_coordinates(vertical_mid_list, horizontal_mid_list)
 
-print_way(canv, vertical_mid_list, horizontal_mid_list) # Default not optimal way
+#print_way(canv, vertical_mid_list, horizontal_mid_list) # Default not optimal way
 
 change_optimal_way(canv, vertical_mid_list, horizontal_mid_list)
+
+optimal_way_1(canv, vertical_mid_list, horizontal_mid_list)
 
 tkinter.mainloop()
