@@ -24,14 +24,14 @@ def create_field(canvas, c_height, c_width):
 
     if height < c_height and width < c_width:
         canvas.create_rectangle(0, 0, width, height)
-        return height, width
+        return height, width, height1, width1
     else:
         while height > c_height or width > c_width:
             print("Incorrect data ! Try again")
             height = input("[ ! ] Enter field height: ")
             width = input("[ ! ] Enter field width: ")
     canvas.create_rectangle(0, 0, width, height)
-    return height, width
+    return height, width, height1, width1
 
 def create_vertical_lines(canvas, f_height, f_width, sector_size):
     # vertical
@@ -129,7 +129,6 @@ def change_optimal_way(canv, horizontal_mid_list, vertical_mid_list):
     if x_len % 2 == 0 and y_len % 2 == 1:
         print("Var - 1")
 
-        print("Var - 1")
     elif x_len % 2 == 1 and y_len % 2 == 0:
         print("V - 2")
     elif x_len % 2 == 1 and y_len % 2 == 1:
@@ -158,7 +157,7 @@ def export_coordinates(h_m_l , v_m_l):
     export_x(horizontal_mid_list)
     export_y(vertical_mid_list)
 
-def optimal_way_1(canvas, horizontal_mid_list, vertical_mid_list):
+def optimal_way_1(canvas, horizontal_mid_list, vertical_mid_list, lat_start, lon_start):
     y = 0
     x = 0
     output_c = open("output.txt", 'w')
@@ -166,14 +165,14 @@ def optimal_way_1(canvas, horizontal_mid_list, vertical_mid_list):
 
     while y < vertical_mid_list.__len__() - 1:
         canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x], vertical_mid_list[y + 1], arrow=LAST)
-        output_c.write(str(horizontal_mid_list[x]) + " : " + str(vertical_mid_list[y]) + "\n")
+        output_c.write(str(horizontal_mid_list[x] + lon_start) + " : " + str(vertical_mid_list[y] + lat_start) + "\n")
         y = y + 1
 
 
     while x < horizontal_mid_list.__len__() - 1:
         canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x + 1], vertical_mid_list[y], arrow=LAST)
         x = x + 1
-        output_c.write(str(horizontal_mid_list[x]) + " : " + str(vertical_mid_list[y])+ "\n")
+        output_c.write(str(horizontal_mid_list[x] + lon_start) + " : " + str(vertical_mid_list[y] + lat_start) + "\n")
 
     canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x], vertical_mid_list[y - 1], arrow=LAST)
     output_c.write(str(horizontal_mid_list[x]) + " : " + str(vertical_mid_list[y]) + "\n")
@@ -188,6 +187,8 @@ def optimal_way_1(canvas, horizontal_mid_list, vertical_mid_list):
         while y > 0:
             canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x],
                                vertical_mid_list[y - 1], arrow=LAST)
+            output_c.write(
+                str(horizontal_mid_list[x] + lon_start) + " : " + str(vertical_mid_list[y] + lat_start) + "\n")
             y = y - 1
         canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x - 1],
                            vertical_mid_list[y], arrow=LAST)
@@ -196,9 +197,12 @@ def optimal_way_1(canvas, horizontal_mid_list, vertical_mid_list):
         while y < vertical_mid_list.__len__() - 2:
             canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x],
                                vertical_mid_list[y + 1], arrow=LAST)
+            output_c.write(
+                str(horizontal_mid_list[x] + lon_start) + " : " + str(vertical_mid_list[y] + lat_start) + "\n")
             y = y + 1
         canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x - 1],
                            vertical_mid_list[y], arrow=LAST)
+        output_c.write(str(horizontal_mid_list[x] + lon_start) + " : " + str(vertical_mid_list[y] + lat_start) + "\n")
         x = x - 1
 
         count = count + 1
@@ -223,7 +227,7 @@ tkinter = Tk()
 canv = create_canvas(canv_height, canv_width, tkinter) # Drawing canvas
 canv.pack()
 
-(field_height, field_width) = create_field(canv, canv_height, canv_width) # Drawing field
+(field_height, field_width, lat_start, lon_start) = create_field(canv, canv_height, canv_width) # Drawing field
 
 (vertical_mid_list, horizontal_mid_list) = create_sectors(canv, field_height, field_width) # Drawing sectors (step = 10px default) !!!!! -- > mid_lists - list with mid coords
 
@@ -235,6 +239,6 @@ print_dots(vertical_mid_list, horizontal_mid_list, canv, field_width, field_heig
 
 change_optimal_way(canv, vertical_mid_list, horizontal_mid_list)
 
-optimal_way_1(canv, vertical_mid_list, horizontal_mid_list)
+optimal_way_1(canv, vertical_mid_list, horizontal_mid_list, lat_start, lon_start)
 
 tkinter.mainloop()
