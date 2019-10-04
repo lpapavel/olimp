@@ -162,6 +162,7 @@ def optimal_way_1(canvas, horizontal_mid_list, vertical_mid_list):
     y = 0
     x = 0
     output_c = open("output.txt", 'w')
+    output_c.write("X  :  Y \n")
 
     while y < vertical_mid_list.__len__() - 1:
         canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x], vertical_mid_list[y + 1], arrow=LAST)
@@ -175,6 +176,7 @@ def optimal_way_1(canvas, horizontal_mid_list, vertical_mid_list):
         output_c.write(str(horizontal_mid_list[x]) + " : " + str(vertical_mid_list[y])+ "\n")
 
     canvas.create_line(horizontal_mid_list[x], vertical_mid_list[y], horizontal_mid_list[x], vertical_mid_list[y - 1], arrow=LAST)
+    output_c.write(str(horizontal_mid_list[x]) + " : " + str(vertical_mid_list[y]) + "\n")
 
 
     y = y - 1
